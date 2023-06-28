@@ -7,14 +7,15 @@
         @apply="onApply"
         :omit-key="true"
         :insert-space="true"
+        class="z-1"
     >
         <editor
             ref="editor"
             :editor-class="[
                 'block w-full rounded-md sm:text-sm font-mono p-3',
-                'focus:ring-gray-300',
-                'focus:ring-0',
-                'bg-gray-50',
+                'focus:outline-none focus:ring-gray-300 focus:ring-2 focus:bg-gray-50 focus:dark:bg-gray-800',
+                'bg-gray-100',
+                'border border-solid !dark:border-gray-700',
                 'text-gray-900',
                 'dark:bg-gray-800',
                 'dark:border-gray-800',
@@ -92,3 +93,25 @@ export default {
     }
 }
 </script>
+<style>
+@import 'floating-vue/dist/style.css';
+.mention-item {
+    @apply px-[.5rem] py-[0.4rem];
+    @apply rounded-[0px];
+}
+
+.mention-selected {
+    @apply bg-gray-400;
+    @apply font-bold;
+}
+.v-popper--theme-mentionable .v-popper__inner {
+  @apply rounded bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-900;
+}
+.v-popper--theme-mentionable .v-popper__arrow-inner {
+    @apply border-gray-100 dark:border-gray-700;
+}
+.v-popper--theme-mentionable .v-popper__arrow-outer {
+    @apply border-gray-300 dark:border-gray-900;
+}
+
+</style>

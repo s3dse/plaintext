@@ -9,7 +9,6 @@
         @input="emitInputState"
         :placeholder="placeholder"
         :class="editorClass"
-        tabindex="0"
     ></textarea>
 </template>
 <script>
@@ -74,13 +73,3 @@ export default {
     }
 }
 </script>
-<style>
-@import 'floating-vue/dist/style.css';
-.mention-item {
-    padding: 0.4rem 0.8rem;
-    border-radius: 0.4rem;
-}
-.mention-selected {
-    background: rgb(192, 250, 153);
-}
-</style>

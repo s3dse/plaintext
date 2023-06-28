@@ -1,3 +1,4 @@
+import transformerDirectives from '@unocss/transformer-directives'
 import { defineConfig, presetIcons, presetTypography, presetUno } from 'unocss'
 
 export default defineConfig({
@@ -11,5 +12,8 @@ export default defineConfig({
             }
         })
     ],
-    rules: [['caret-block', { 'caret-shape': 'block' }]]
+    rules: [['caret-block', { 'caret-shape': 'block' }]],
+    transformers: [
+        transformerDirectives()
+    ]
 })
