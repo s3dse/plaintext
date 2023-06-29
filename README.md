@@ -1,6 +1,6 @@
 # plaintext
 
-This template should help get you started developing with Vue 3 in Vite.
+A plain text editor based on Vue.
 
 ## Recommended IDE Setup
 
