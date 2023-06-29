@@ -65,6 +65,7 @@ export default {
         }
     },
     mounted() {
+        store.setEditor(this.$el)
         store.setValue(this.modelValue)
         this.resizeEditor()
         this.$nextTick(() => {

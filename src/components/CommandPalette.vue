@@ -63,7 +63,9 @@ whenever(enter, () => {
     const command = commands.value[commandIndex.value]
     if (command && command.action) {
         if (isAsync(command.action)) {
-            command.action().then(result => store.insertValue(result))
+            command.action().then(result => {
+                store.insertValue(result)
+            })
         } else {
             const result = command.action()
             store.insertValue(result)

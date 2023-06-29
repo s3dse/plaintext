@@ -1,7 +1,11 @@
-import { reactive } from 'vue'
+import { reactive, nextTick} from 'vue'
 
 
 export const store = reactive({
+    editor: null,
+    setEditor(editor) {
+        this.editor = editor
+    },
     lastEdited: Date.now(),
     setLastEdited(millis = Date.now()) {
         this.lastEdited = millis
@@ -24,9 +28,12 @@ export const store = reactive({
         const text = this.value
         const result = text.substring(0, start) + val + text.substring(end)
         this.setValue(result)
-        const cursor = (text.substring(0, start) + val).length - 1
-        this.setSelection({start: cursor, end: cursor})
-        postAction(this)
+        const cursor = (text.substring(0, start) + val).length
+        nextTick(() => {
+            this.editor.setSelectionRange(cursor, cursor)
+            this.setSelection({start: cursor, end: cursor})
+            postAction(this)
+        })
     }
 })
 
