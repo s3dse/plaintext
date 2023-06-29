@@ -81,14 +81,12 @@ export default {
             this.$emit('cursor:change', e)
         },
         onOpen(key) {
-            console.log(JSON.stringify(store))
             const suggestions = suggestionCatalogue[key]
             if (suggestions) {
                 this.suggestions = suggestions
             }
         },
         onApply() {
-            console.log(JSON.stringify(store))
         }
     }
 }
