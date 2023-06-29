@@ -16,7 +16,7 @@ const props = defineProps({
             {
                 name: 'hello',
                 label: 'Say Hello!',
-                action: () => 'Hello'
+                action: () => new Promise(resolve => setTimeout(resolve, 800)).then(() => 'Hello')
             },
             {
                 name: 'getTime',
@@ -27,7 +27,8 @@ const props = defineProps({
     }
 })
 const emit = defineEmits(['onClickOutside', 'onActionCalled'])
-const { commands, visible } = toRefs(props)
+const { visible } = toRefs(props)
+const commands = ref(props.commands.map(command => ({...command, busy: false})))
 const commandIndex = ref(0)
 whenever(keys.up, () => {
     if (!visible.value) return
@@ -45,7 +46,6 @@ whenever(keys.down, () => {
         commandIndex.value = 0
     }
 })
-const isAsync = fn => fn.constructor.name === 'AsyncFunction'
 const isInputOrTextArea = e => ['INPUT', 'TEXTAREA'].includes(e.target?.tagName)
 const isKeyUpOrDown = e => ['keyup', 'keydown'].includes(e.type)
 const { enter } = useMagicKeys({
@@ -53,28 +53,27 @@ const { enter } = useMagicKeys({
     onEventFired(e) {
         if (visible.value && isInputOrTextArea(e) && isKeyUpOrDown(e)) {
             e.preventDefault()
-            e.stopPropagation()
-            e.stopImmediatePropagation()
         }
     }
 })
-whenever(enter, () => {
+const runAction = () => {
     if (!visible.value) return
     const command = commands.value[commandIndex.value]
-    if (command && command.action) {
-        if (isAsync(command.action)) {
-            command.action().then(result => {
-                store.insertValue(result)
-            })
-        } else {
-            const result = command.action()
+    if (!command || !command.action) return
+    command.busy = true
+    command
+        .action()
+        .then(result => {
             store.insertValue(result)
-        }
-        nextTick(() => {
-            emit('onActionCalled', command.name)
         })
-    }
-})
+        .then(() =>
+            nextTick(() => {
+                command.busy = false
+                emit('onActionCalled', command.name)
+            })
+        )
+}
+whenever(enter, runAction)
 
 const handleClickOutside = () => emit('onClickOutside')
 </script>
@@ -89,6 +88,7 @@ const handleClickOutside = () => emit('onClickOutside')
                 v-on-click-outside="handleClickOutside"
                 class="command-palette fixed left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%] z-10 border border-solid border-gray-400 dark:border-gray-50 rounded-lg bg-gray-50 dark:bg-gray-800"
             >
+                <slot name="header"></slot>
                 <div class="command-palette-commands py-8">
                     <ul class="text-gray-900 dark:text-gray-200 text-2xl font-light">
                         <li
@@ -99,15 +99,25 @@ const handleClickOutside = () => emit('onClickOutside')
                             v-for="(item, index) in commands"
                             :key="index"
                             @mouseover="commandIndex = index"
-                            @click="runAction(item)"
+                            @click="runAction"
                         >
                             <span class="px-8">
                                 {{ item.label }}
+                                <span
+                                    class="animate-spin inline-block w-5 h-5 border-[3px] border-current border-t-transparent text-yellow-1000 rounded-full"
+                                    role="status"
+                                    aria-label="loading"
+                                    v-if="item.busy"
+                                >
+                                    <span class="sr-only">Loading...</span>
+                                </span>
                             </span>
                         </li>
                     </ul>
                 </div>
-                <command-palette-footer></command-palette-footer>
+                <slot name="footer">
+                    <command-palette-footer></command-palette-footer>
+                </slot>
             </div>
         </div>
     </Transition>
