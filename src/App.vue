@@ -18,23 +18,24 @@ whenever(keys.escape, () => (commandPaletteVisible.value = false))
 </script>
 
 <template>
-    <!-- <div :class="[commandPaletteVisible ? 'bg-opacity-50 backdrop:bg-green-100':'']"> -->
+    <Teleport to="#modals">
         <command-palette
             :visible="commandPaletteVisible"
             @on-click-outside="commandPaletteVisible = false"
             @on-action-called="commandPaletteVisible = false"
         ></command-palette>
-        <dark-light class="flex justify-end p-2"></dark-light>
-        <div class="flex justify-center mt-8">
-            <div class="w-[80vw] h-[80vh]">
-                <div class="flex border-gray-300">
-                    <div class="w-full">
-                        <menu-bar editor-ref="editor" class="py-1"></menu-bar>
-                        <mention-editor @cursor:change="onCursorChange"></mention-editor>
-                        <cmd-key-hint></cmd-key-hint>
-                    </div>
+    </Teleport>
+    <dark-light class="flex justify-end p-2"></dark-light>
+    <div class="flex justify-center mt-8">
+        <div class="w-[80vw] h-[80vh]">
+            <div class="flex border-gray-300">
+                <div class="w-full">
+                    <menu-bar editor-ref="editor" class="py-1"></menu-bar>
+                    <mention-editor @cursor:change="onCursorChange"></mention-editor>
+                    <cmd-key-hint></cmd-key-hint>
                 </div>
             </div>
         </div>
+    </div>
     <!-- </div> -->
 </template>

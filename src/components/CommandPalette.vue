@@ -49,14 +49,17 @@ const runAction = item => {
         emit('onActionCalled', item.name)
     })
 }
+const isInputOrTextArea = e => ['INPUT', 'TEXTAREA'].includes(e.target?.tagName)
+const isKeyUpOrDown = e => ['keyup', 'keydown'].includes(e.type)
 const { enter } = useMagicKeys({
     passive: false,
     onEventFired(e) {
         if (
-            // e.key.toLowerCase() === 'enter' &&
             visible.value &&
-            ['keyup', 'keydown'].includes(e.type) &&
-            ['INPUT', 'TEXTAREA'].includes(e.target?.tagName)
+            isInputOrTextArea(e) &&
+            isKeyUpOrDown(e)
+            // ['keyup', 'keydown'].includes(e.type) &&
+            // ['INPUT', 'TEXTAREA'].includes(e.target?.tagName)
         ) {
             e.stopPropagation()
             e.preventDefault()
@@ -77,17 +80,12 @@ whenever(enter, () => {
 const handleClickOutside = () => emit('onClickOutside')
 </script>
 <template>
-    <Teleport to="#modals">
-        <div
-            :class="[
-                visible
-                    ? 'fixed w-screen h-full z-10 overflow-auto bg-gray-200 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75 flex'
-                    : ''
-            ]"
+    <Transition name="modal">
+        <div v-if="visible"
+            class="fixed w-screen flex h-full z-10 overflow-auto bg-gray-200 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75"
         >
             <div
                 tabindex="0"
-                v-if="visible"
                 v-on-click-outside="handleClickOutside"
                 class="command-palette fixed left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%] z-10 font-sans border border-solid rounded-lg bg-gray-50 dark:bg-gray-800"
             >
@@ -114,5 +112,13 @@ const handleClickOutside = () => emit('onClickOutside')
                 <command-palette-footer></command-palette-footer>
             </div>
         </div>
-    </Teleport>
+    </Transition>
 </template>
+<style>
+.modal-enter-from, .modal-leave-to {
+    @apply op-0;
+}
+.modal-enter-active, .modal-leave-active {
+    @apply transition-opacity ease duration-150;
+}
+</style>

@@ -17,7 +17,7 @@
                     <span class="ml-1">to close</span>
                 </span>
                 <span class="flex gap-1 justify-center items-center">
-                    <span class=" border rounded px-1">
+                    <span class=" border border-[1px] rounded px-1">
                         <span class="i-mdi-keyboard-return"></span>
                     </span>
                     <span>to run command</span>
