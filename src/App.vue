@@ -5,6 +5,7 @@ import { store as st } from '@/components/editor-store.js'
 import CommandPalette from './components/CommandPalette.vue'
 import CmdKeyHint from './components/CmdKeyHint.vue'
 import DarkLight from '@/components/DarkLight.vue'
+import { commands } from '@/components/commands.js'
 import { useMagicKeys, whenever } from '@vueuse/core'
 import { ref, nextTick } from 'vue'
 
@@ -29,6 +30,7 @@ const onResize = editor => {
     <Teleport to="#modals">
         <command-palette
             command-palette-class="!min-w-[380px]"
+            :commands="commands"
             :visible="commandPaletteVisible"
             @on-click-outside="commandPaletteVisible = false"
             @on-action-called="commandPaletteVisible = false"
@@ -46,7 +48,8 @@ const onResize = editor => {
                         editor-class="editor resize-none"
                         v-model="store.value"
                         @selection:range:change="onCursorChange"
-                        @on-resize="onResize"></editor>
+                        @on-resize="onResize"
+                    ></editor>
                     <cmd-key-hint></cmd-key-hint>
                 </div>
             </div>

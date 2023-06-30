@@ -16,18 +16,7 @@ const props = defineProps({
     },
     commands: {
         type: Array,
-        default: () => [
-            {
-                name: 'hello',
-                label: 'Say Hello!',
-                action: () => new Promise(resolve => setTimeout(resolve, 800)).then(() => 'Hello')
-            },
-            {
-                name: 'getTime',
-                label: 'What time is it?',
-                action: async () => new Date().toLocaleTimeString('de-DE')
-            }
-        ]
+        default: () => []
     }
 })
 const emit = defineEmits(['onClickOutside', 'onActionCalled'])
