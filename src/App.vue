@@ -20,6 +20,7 @@ whenever(keys.escape, () => (commandPaletteVisible.value = false))
 <template>
     <Teleport to="#modals">
         <command-palette
+            command-palette-class="!min-w-[380px]"
             :visible="commandPaletteVisible"
             @on-click-outside="commandPaletteVisible = false"
             @on-action-called="commandPaletteVisible = false"

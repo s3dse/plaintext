@@ -10,6 +10,10 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
+    commandPaletteClass: {
+        type: String,
+        default: ''
+    },
     commands: {
         type: Array,
         default: () => [
@@ -86,7 +90,7 @@ const handleClickOutside = () => emit('onClickOutside')
             <div
                 tabindex="0"
                 v-on-click-outside="handleClickOutside"
-                class="command-palette fixed left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%] z-10 border border-solid border-gray-400 dark:border-gray-50 rounded-lg bg-gray-50 dark:bg-gray-800"
+                :class="['command-palette fixed left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%] z-10 border border-solid border-gray-400 dark:border-gray-50 rounded-lg bg-gray-50 dark:bg-gray-800', commandPaletteClass]"
             >
                 <slot name="header"></slot>
                 <div class="command-palette-commands py-8">
