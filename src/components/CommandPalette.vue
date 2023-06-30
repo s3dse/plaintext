@@ -79,7 +79,7 @@ const handleClickOutside = () => emit('onClickOutside')
             <div
                 tabindex="0"
                 v-on-click-outside="handleClickOutside"
-                :class="['command-palette fixed left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%] z-10 border border-solid border-gray-400 dark:border-gray-50 rounded-lg bg-gray-50 dark:bg-gray-800', commandPaletteClass]"
+                :class="['command-palette fixed left-[50%] top-[50%] w-[80vw] translate-y-[-50%] translate-x-[-50%] z-10 border border-solid border-gray-400 dark:border-gray-50 rounded-lg bg-gray-50 dark:bg-gray-800', commandPaletteClass]"
             >
                 <slot name="header"></slot>
                 <div class="command-palette-commands py-8">
@@ -94,7 +94,7 @@ const handleClickOutside = () => emit('onClickOutside')
                             @mouseover="commandIndex = index"
                             @click="runAction"
                         >
-                            <span class="px-8">
+                            <span class="px-8 whitespace-nowrap">
                                 {{ item.label }}
                                 <span
                                     class="animate-spin inline-block w-5 h-5 border-[3px] border-current border-t-transparent text-yellow-1000 rounded-full"
