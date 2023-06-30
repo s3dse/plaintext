@@ -8,7 +8,7 @@
         @mouseup="emitCursor"
         @input="emitInputState"
         :placeholder="placeholder"
-        :class="editorClass"
+        :class="['resize-none', ...editorClass]"
     ></textarea>
 </template>
 <script>
@@ -52,7 +52,10 @@ export default {
         resizeEditor() {
             getEditor(this).style.height = 'auto'
             this.$nextTick(() => {
-                getEditor(this).style.height = getEditor(this).scrollHeight + 'px'
+                const maxHeight = document.querySelector('.editor-max-height').offsetHeight
+                const editorHeight = getEditor(this).scrollHeight
+                const height = Math.min(maxHeight - 50, editorHeight)
+                getEditor(this).style.height = height + 'px'
             })
         },
         emitCursor(event) {

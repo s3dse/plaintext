@@ -19,7 +19,8 @@
                 'text-gray-900',
                 'dark:bg-gray-800',
                 'dark:border-gray-800',
-                'dark:text-gray-200'
+                'dark:text-gray-200',
+                'scrollbar scrollbar-rounded scrollbar-thumb-color-gray-900 scrollbar-track-color-gray-800 scrollbar-w-2 scrollbar-h-2 scrollbar-radius-2 scrollbar-track-radius-4 scrollbar-thumb-radius-4'
             ]"
             v-model="store.value"
             @selection:range:change="onCursorChange"
@@ -111,5 +112,4 @@ export default {
 .v-popper--theme-mentionable .v-popper__arrow-outer {
     @apply border-gray-300 dark:border-gray-900;
 }
-
 </style>

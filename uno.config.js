@@ -1,5 +1,6 @@
 import transformerDirectives from '@unocss/transformer-directives'
-import { defineConfig, presetIcons, presetTypography, presetUno } from 'unocss'
+import { defineConfig, presetIcons, presetTypography, presetUno, presetAttributify } from 'unocss'
+import { presetScrollbar } from 'unocss-preset-scrollbar'
 
 export default defineConfig({
     presets: [
@@ -10,7 +11,9 @@ export default defineConfig({
                 display: 'inline-flex',
                 'vertical-align': 'middle'
             }
-        })
+        }),
+        presetScrollbar(),
+        presetAttributify()
     ],
     rules: [['caret-block', { 'caret-shape': 'block' }]],
     transformers: [

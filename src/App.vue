@@ -27,7 +27,7 @@ whenever(keys.escape, () => (commandPaletteVisible.value = false))
     </Teleport>
     <dark-light class="flex justify-end p-2"></dark-light>
     <div class="flex justify-center mt-8">
-        <div class="w-[80vw] h-[80vh]">
+        <div class="editor-max-height w-[80vw] h-[80vh]">
             <div class="flex border-gray-300">
                 <div class="w-full">
                     <menu-bar editor-ref="editor" class="py-1"></menu-bar>
