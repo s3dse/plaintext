@@ -1,20 +1,28 @@
 <script setup>
-import MentionEditor from './components/MentionEditor.vue'
+import Editor from './components/Editor.vue'
 import MenuBar from '@/components/MenuBar.vue'
 import { store as st } from '@/components/editor-store.js'
 import CommandPalette from './components/CommandPalette.vue'
 import CmdKeyHint from './components/CmdKeyHint.vue'
 import DarkLight from '@/components/DarkLight.vue'
 import { useMagicKeys, whenever } from '@vueuse/core'
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 
-const text = ref('')
 const store = ref(st)
 const commandPaletteVisible = ref(false)
 const onCursorChange = e => console.log(e)
 const keys = useMagicKeys()
 whenever(keys.cmd_k, () => (commandPaletteVisible.value = !commandPaletteVisible.value))
 whenever(keys.escape, () => (commandPaletteVisible.value = false))
+const onResize = editor => {
+    editor.style.height = 'auto'
+    nextTick(() => {
+        const maxHeight = document.querySelector('.editor-max-height').offsetHeight
+        const editorHeight = editor.scrollHeight
+        const height = Math.min(maxHeight - 50, editorHeight)
+        editor.style.height = height + 'px'
+    })
+}
 </script>
 
 <template>
@@ -32,11 +40,16 @@ whenever(keys.escape, () => (commandPaletteVisible.value = false))
             <div class="flex border-gray-300">
                 <div class="w-full">
                     <menu-bar editor-ref="editor" class="py-1"></menu-bar>
-                    <mention-editor @cursor:change="onCursorChange"></mention-editor>
+                    <!-- <mention-editor @cursor:change="onCursorChange" @on-resize="onResize"></mention-editor> -->
+                    <editor
+                        ref="editor"
+                        editor-class="editor resize-none"
+                        v-model="store.value"
+                        @selection:range:change="onCursorChange"
+                        @on-resize="onResize"></editor>
                     <cmd-key-hint></cmd-key-hint>
                 </div>
             </div>
         </div>
     </div>
-    <!-- </div> -->
 </template>

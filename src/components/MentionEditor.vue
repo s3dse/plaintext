@@ -28,6 +28,7 @@
             ]"
             v-model="store.value"
             @selection:range:change="onCursorChange"
+            @on-resize="onResize"
         ></editor>
         <template #no-result>
             <div class="dim">No result</div>
@@ -80,10 +81,13 @@ export default {
             suggestions: []
         }
     },
-    emits: ['cursor:change'],
+    emits: ['cursor:change', 'on-resize'],
     methods: {
         onCursorChange(e) {
             this.$emit('cursor:change', e)
+        },
+        onResize(e) {
+            this.$emit('on-resize', e)
         },
         onOpen(key) {
             const suggestions = suggestionCatalogue[key]

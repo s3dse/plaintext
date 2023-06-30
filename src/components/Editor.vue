@@ -8,7 +8,7 @@
         @mouseup="emitCursor"
         @input="emitInputState"
         :placeholder="placeholder"
-        :class="['resize-none', ...editorClass]"
+        :class="editorClass"
     ></textarea>
 </template>
 <script>
@@ -30,11 +30,11 @@ export default {
             default: 'Type your text here...'
         },
         editorClass: {
-            type: Array,
-            default: () => []
+            type: String,
+            default: ''
         }
     },
-    emits: ['update:modelValue', 'selection:range:change'],
+    emits: ['update:modelValue', 'selection:range:change', 'onResize'],
     data() {
         return {
             text: ''
@@ -50,13 +50,7 @@ export default {
             this.resizeEditor()
         },
         resizeEditor() {
-            getEditor(this).style.height = 'auto'
-            this.$nextTick(() => {
-                const maxHeight = document.querySelector('.editor-max-height').offsetHeight
-                const editorHeight = getEditor(this).scrollHeight
-                const height = Math.min(maxHeight - 50, editorHeight)
-                getEditor(this).style.height = height + 'px'
-            })
+            this.$emit('onResize', getEditor(this))
         },
         emitCursor(event) {
             const selection = {
