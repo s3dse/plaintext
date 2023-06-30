@@ -22,5 +22,6 @@ export const commands = [
                 .then(() => store.value.substring(store.selection.start, store.selection.end))
                 .then(v => v.split(/\W+/g))
                 .then(words => words.filter(e => e).map(word => 'corporate__' + word))
+                .then(words => words.join(' '))
     }
 ]

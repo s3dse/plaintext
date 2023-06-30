@@ -21,8 +21,9 @@ const props = defineProps({
 })
 const emit = defineEmits(['onClickOutside', 'onActionCalled'])
 const { visible } = toRefs(props)
-const commands = ref(props.commands.map(command => ({...command, busy: false})))
+const commands = ref(props.commands.map(command => ({ ...command, busy: false })))
 const commandIndex = ref(0)
+const isSuggestionActive = () => commands.value.filter(c => c.result).length
 whenever(keys.up, () => {
     if (!visible.value) return
     if (commandIndex.value > 0) {
@@ -49,11 +50,8 @@ const { enter } = useMagicKeys({
         }
     }
 })
-const runAction = () => {
-    if (!visible.value) return
-    const command = commands.value[commandIndex.value]
-    if (!command || !command.action) return
-    command.busy = true
+
+const runFact = command => {
     command
         .action()
         .then(result => {
@@ -65,6 +63,31 @@ const runAction = () => {
                 emit('onActionCalled', command.name)
             })
         )
+}
+const runSuggestion = command => {
+    command
+        .action()
+        .then(result => (command.result = result))
+        .then(() => (command.busy = false))
+}
+const runAction = () => {
+    if (!visible.value) return
+    const command = commands.value[commandIndex.value]
+    if (!command || !command.action) return
+    command.busy = true
+    if (command.type === 'fact') {
+        runFact(command)
+    }
+    if (command.type === 'suggestion') {
+        if (isSuggestionActive()) {
+            store.insertValue(commands.value.find(c => c.result).result)
+            command.result = null
+            command.busy = false
+            emit('onActionCalled', command.name)
+        } else {
+            runSuggestion(command)
+        }
+    }
 }
 whenever(enter, runAction)
 
@@ -79,7 +102,10 @@ const handleClickOutside = () => emit('onClickOutside')
             <div
                 tabindex="0"
                 v-on-click-outside="handleClickOutside"
-                :class="['command-palette fixed left-[50%] top-[50%] w-[80vw] translate-y-[-50%] translate-x-[-50%] z-10 border border-solid border-gray-400 dark:border-gray-50 rounded-lg bg-gray-50 dark:bg-gray-800', commandPaletteClass]"
+                :class="[
+                    'command-palette fixed left-[50%] top-[50%] w-[80vw] translate-y-[-50%] translate-x-[-50%] z-10 border border-solid border-gray-400 dark:border-gray-50 rounded-lg bg-gray-50 dark:bg-gray-800',
+                    commandPaletteClass
+                ]"
             >
                 <slot name="header"></slot>
                 <div class="command-palette-commands py-8">
@@ -94,7 +120,7 @@ const handleClickOutside = () => emit('onClickOutside')
                             @mouseover="commandIndex = index"
                             @click="runAction"
                         >
-                            <span class="px-8 whitespace-nowrap">
+                            <span class="px-8 whitespace-nowrap flex flex-col">
                                 {{ item.label }}
                                 <span
                                     class="animate-spin inline-block w-5 h-5 border-[3px] border-current border-t-transparent text-yellow-1000 rounded-full"
@@ -104,6 +130,22 @@ const handleClickOutside = () => emit('onClickOutside')
                                 >
                                     <span class="sr-only">Loading...</span>
                                 </span>
+                                <div
+                                    class="py-8 flex flex-col w-full font-normal"
+                                    v-if="item.result"
+                                >
+                                    <div class="flex flex-row justify-end items-baseline gap-4">
+                                        <div class="i-mdi-thumb-up-outline"></div>
+                                        <div class="i-mdi-thumb-down-outline"></div>
+                                        <div>
+                                            <span class="i-mdi-refresh"></span>
+                                            <span>Re-Generate</span>
+                                        </div>
+                                    </div>
+                                    <pre class="prose border w-full min-h-20">{{
+                                        item.result
+                                    }}</pre>
+                                </div>
                             </span>
                         </li>
                     </ul>
